@@ -1,4 +1,5 @@
-    const parser = new DOMParser();
+const {shell} = require('electron');
+const parser = new DOMParser();
     // variables
     const linksSection = document.querySelector('.links');
     const errorMessage = document.querySelector('.error-message');
@@ -17,12 +18,14 @@ newLinkForm.addEventListener('submit', (event) => {
     const url = newLinkUrl.value;
 
     fetch(url)
+      .then(validateResponse)
       .then(response => response.text())
       .then(parseResponse)
       .then(findTitle)
       .then(title => storeLink(title, url))
       .then(clearForm)
-      .then(renderLinks);
+      .then(renderLinks)
+      .catch(error => handleError(error, url));
 })
 
 const clearForm = () => {
@@ -66,4 +69,22 @@ clearStorageButton.addEventListener('click', () => {
     linksSection.innerHTML = '';
 })
 
+const handleError = (error, url) => {
+    errorMessage.innerHTML = `
+    There was an issue adding "${url}": ${error.message}`.trim();
+    setTimeout(() => errorMessage.innerText = null, 5000);
+}
+
+const validateResponse = (response) => {
+    if(response.ok) {return response;}
+    throw new Error(`Status cofe of ${response.status}
+    ${response.statusText}`);
+}
+
+linksSection.addEventListener('click', (event) => {
+    if(event.target.href) {
+        event.preventDefault();
+        shell.openExternal(event.target.href);
+    }
+})
 renderLinks();
