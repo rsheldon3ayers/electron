@@ -7,8 +7,7 @@
     const newLinkSubmit = document.querySelector('.new-link-submit');
     const clearStorageButton = document.querySelector('.clear-storage');
 
-
-newLinkUrl.addEventListener('keyup', ()=>{
+newLinkUrl.addEventListener('keyup', ()=> {
     newLinkSubmit.disabled = !newLinkUrl.validity.valid;
 });
 
@@ -20,7 +19,10 @@ newLinkForm.addEventListener('submit', (event) => {
     fetch(url)
       .then(response => response.text())
       .then(parseResponse)
-      .then(findTitle);
+      .then(findTitle)
+      .then(title => storeLink(title, url))
+      .then(clearForm)
+      .then(renderLinks);
 })
 
 const clearForm = () => {
@@ -35,3 +37,33 @@ const findTitle = (nodes) => {
     return nodes.querySelector('title').innerText;
 }
 
+const storeLink = (title, url ) => {
+    
+    localStorage.setItem(url, JSON.stringify({ title: title, url : url}));
+};
+
+const getLinks = () => {
+    return Object.keys(localStorage)
+                 .map(key => JSON.parse(localStorage.getItem(key)));
+}
+const convertToElement = (link) => {
+    return `
+    <div class="link">
+    <h3>${link.title}</h3>
+    <p>
+    <a href="${link.url}">${link.url}</a>
+    </p>
+    </div>
+    `;
+};
+
+const renderLinks = () =>{
+    const linkElements = getLinks().map(convertToElement).join('');
+    linksSection.innerHTML = linkElements;
+}
+clearStorageButton.addEventListener('click', () => {
+    localStorage.clear();
+    linksSection.innerHTML = '';
+})
+
+renderLinks();
