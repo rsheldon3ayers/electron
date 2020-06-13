@@ -1,0 +1,19 @@
+{
+  "name": "bookmarker",
+  "version": "1.0.0",
+  "description": "My first electron app",
+  "main": "./app/main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rsheldon3ayers/electron.git"
+  },
+  "author": "Robert Ayers <rsheldon3ayers@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/rsheldon3ayers/electron/issues"
+  },
+  "homepage": "https://github.com/rsheldon3ayers/electron#readme"
+}
